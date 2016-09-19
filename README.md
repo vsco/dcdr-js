@@ -2,7 +2,7 @@
 
 VSCO’s [DCDR](https://github.com/vsco/dcdr) (Decider) package for Node.js
 
-[![Build Status](https://travis-ci.com/vsco/dcdr-js.svg?token=LuhP5dYo5sYL6Z88n4sW&branch=master)](https://travis-ci.com/vsco/dcdr-js)
+[![Build Status](https://travis-ci.org/vsco/dcdr-js.svg?branch=master)](https://travis-ci.org/vsco/dcdr-js)
 
 ## Overview
 
