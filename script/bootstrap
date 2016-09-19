@@ -1,0 +1,6 @@
+#!/bin/bash
+# Bootstrap
+
+set -e
+# Install dependencies
+npm install -s
