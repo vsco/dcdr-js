@@ -47,7 +47,7 @@ Dcdr.prototype.withinPercentile = function(feature, id, val) {
   var uid = this.crc(feature + id.toString());
   var percent = val * 100.00;
 
-  return uid % 100 <= percent;
+  return uid % 100 < percent;
 };
 
 Dcdr.prototype.crc = function(feature) {
