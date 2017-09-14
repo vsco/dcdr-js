@@ -15,7 +15,7 @@ Dcdr.prototype.init = function(config) {
 
   fs.exists(this.config.dcdr.path, function(exists) {
     if (exists) {
-      this.loadFeatures(true, this.config.dcdr.path);
+      this.loadFeatures(this.config.dcdr.path, true);
       this.watchConfig();
     } else {
       this.config.logger.error(this.config.dcdr.path + ' not found.');
@@ -26,11 +26,11 @@ Dcdr.prototype.init = function(config) {
 Dcdr.prototype.watchConfig = function() {
   fs.watch(this.config.dcdr.path, { persistent: false }, function() {
     this.config.logger.info('Reloading features from ' + this.config.dcdr.path);
-    this.loadFeatures(false, this.config.dcdr.path);
+    this.loadFeatures(this.config.dcdr.path, false);
   }.bind(this));
 };
 
-Dcdr.prototype.loadFeatures = function(isInitialLoad, path) {
+Dcdr.prototype.loadFeatures = function(path, isInitialLoad) {
   var featuresJson = fs.readFileSync(path, 'utf8');
   if (featuresJson !== '' || isInitialLoad) {
     var features = JSON.parse(featuresJson);
