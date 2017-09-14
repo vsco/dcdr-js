@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 'use strict';
 
+var fs = require('fs');
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -97,5 +98,17 @@ describe('Dcdr', function() {
 
     expect(dcdr.isAvailable('boolean_feature')).to.be.false;
     done();
+  });
+
+  it('handles features file updated to zero length', function(done) {
+    var tempDir = process.env.TEMP || process.env.TMP || '/tmp';
+    var tempPath = tempDir + '/dcdr-test.json';
+
+    fs.writeFileSync(tempPath, '{"dcdr":{"features":{"default":{"test": 1}}}}');
+    dcdr.init({ dcdr: { path: tempPath } });
+    setTimeout(function() {
+      fs.writeFileSync(tempPath, '');
+      setTimeout(done, 100);
+    }, 50);
   });
 });
