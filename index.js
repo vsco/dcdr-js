@@ -2,6 +2,7 @@
 
 var fs = require('fs');
 var crc = require('buffer-crc32');
+var chokidar = require('chokidar');
 
 var ROOT_KEY = 'dcdr';
 
@@ -13,21 +14,22 @@ Dcdr.prototype.init = function(config) {
   this.config = config;
   this.config.logger = this.config.logger || console;
 
-  fs.exists(this.config.dcdr.path, function(exists) {
-    if (exists) {
-      this.loadFeatures(this.config.dcdr.path, true);
-      this.watchConfig();
-    } else {
-      this.config.logger.error(this.config.dcdr.path + ' not found.');
-    }
-  }.bind(this));
+  if (fs.existsSync(this.config.dcdr.path)) {
+    this.loadFeatures(this.config.dcdr.path, true);
+    this.watchConfig();
+  } else {
+    this.config.logger.error(this.config.dcdr.path + ' not found.');
+  }
 };
 
 Dcdr.prototype.watchConfig = function() {
-  fs.watch(this.config.dcdr.path, { persistent: false }, function() {
+  function watchHandler() {
     this.config.logger.info('Reloading features from ' + this.config.dcdr.path);
     this.loadFeatures(this.config.dcdr.path, false);
-  }.bind(this));
+  }
+
+  chokidar.watch(this.config.dcdr.path)
+    .on('change', watchHandler.bind(this));
 };
 
 Dcdr.prototype.loadFeatures = function(path, isInitialLoad) {

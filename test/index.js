@@ -27,6 +27,14 @@ var mockFeatures = {
 };
 
 describe('Dcdr', function() {
+  var tempDir = process.env.TEMP || process.env.TMP || '/tmp';
+  var tempPath = tempDir + '/dcdr-test.json';
+
+  // deletes test decider.json file after tests are complete
+  after(function() {
+    fs.unlinkSync(tempPath);
+  });
+
   it('loads features', function(done) {
     dcdr.setFeatures(mockFeatures);
 
@@ -101,14 +109,36 @@ describe('Dcdr', function() {
   });
 
   it('handles features file updated to zero length', function(done) {
-    var tempDir = process.env.TEMP || process.env.TMP || '/tmp';
-    var tempPath = tempDir + '/dcdr-test.json';
-
     fs.writeFileSync(tempPath, '{"dcdr":{"features":{"default":{"test": 1}}}}');
     dcdr.init({ dcdr: { path: tempPath } });
     setTimeout(function() {
       fs.writeFileSync(tempPath, '');
       setTimeout(done, 100);
     }, 50);
+  });
+
+  it('should detect feature flag value changes', function(done) {
+    var features = {
+      dcdr: {
+        features: {
+          default: {
+            boolean_feature: true
+          }
+        }
+      }
+    };
+
+    fs.writeFileSync(tempPath, JSON.stringify(features));
+    dcdr.init({ dcdr: { path: tempPath } });
+
+    expect(dcdr.isAvailable('boolean_feature')).to.be.true;
+
+    // flip the feature flag
+    features.dcdr.features.default.boolean_feature = false;
+    fs.writeFileSync(tempPath, JSON.stringify(features));
+    setTimeout(function() {
+      expect(dcdr.isAvailable('boolean_feature')).to.be.false;
+      done();
+    }, 300);
   });
 });
