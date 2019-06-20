@@ -28,8 +28,16 @@ Dcdr.prototype.watchConfig = function() {
     this.loadFeatures(this.config.dcdr.path, false);
   }
 
-  chokidar.watch(this.config.dcdr.path)
+  this.watcher = chokidar.watch(this.config.dcdr.path)
     .on('change', watchHandler.bind(this));
+};
+
+// Stop the watch. Required to exxit tests gracefully.
+Dcdr.prototype.internalStopWatch = function() {
+  if (this.watcher) {
+    this.watcher.close();
+    delete this.watcher;
+  }
 };
 
 Dcdr.prototype.loadFeatures = function(path, isInitialLoad) {
@@ -56,7 +64,7 @@ Dcdr.prototype.withinPercentile = function(feature, id, val) {
 };
 
 Dcdr.prototype.crc = function(feature) {
-  var buf = new Buffer(feature);
+  var buf = Buffer.from(feature);
   return crc.unsigned(buf);
 };
 

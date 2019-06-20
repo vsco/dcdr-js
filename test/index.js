@@ -30,6 +30,10 @@ describe('Dcdr', function() {
   var tempDir = process.env.TEMP || process.env.TMP || '/tmp';
   var tempPath = tempDir + '/dcdr-test.json';
 
+  afterEach(function() {
+    dcdr.internalStopWatch();
+  });
+
   // deletes test decider.json file after tests are complete
   after(function() {
     fs.unlinkSync(tempPath);
