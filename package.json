@@ -1,6 +1,6 @@
 {
   "name": "dcdr",
-  "version": "1.0.5",
+  "version": "2.0.0",
   "description": "VSCO's DCDR (Decider) package for Node.js",
   "license": "MIT",
   "repository": {
@@ -21,8 +21,8 @@
     "chokidar": "3.0.2"
   },
   "devDependencies": {
-    "chai": "3.5.0",
-    "eslint": "4.19.1",
-    "mocha": "4.1.0"
+    "chai": "4.2.0",
+    "eslint": "6.1.0",
+    "mocha": "6.2.0"
   }
 }
