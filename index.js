@@ -56,7 +56,7 @@ Dcdr.prototype.withinPercentile = function(feature, id, val) {
 };
 
 Dcdr.prototype.crc = function(feature) {
-  var buf = new Buffer(feature);
+  var buf = Buffer.from(feature);
   return crc.unsigned(buf);
 };
 
