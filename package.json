@@ -1,28 +1,28 @@
 {
   "name": "dcdr",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "VSCO's DCDR (Decider) package for Node.js",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git://github.com/vsco/dcdr-js.git"
   },
-  "author": "VSCO Eng <eng@vsco.co> (http://vsco.co)",
+  "author": "VSCO Eng <eng@vsco.co> (https://vsco.co)",
   "engines": {
-    "node": ">=4"
+    "node": ">=8"
   },
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "test": "npm run lint && mocha"
+    "test": "npm run lint && mocha --exit"
   },
   "dependencies": {
-    "buffer-crc32": "^0.2.5",
-    "chokidar": "^2.0.4"
+    "buffer-crc32": "0.2.13",
+    "chokidar": "3.0.2"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "eslint": "^4.18.2",
-    "mocha": "^3.0.2"
+    "chai": "3.5.0",
+    "eslint": "4.19.1",
+    "mocha": "4.1.0"
   }
 }
