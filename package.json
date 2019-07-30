@@ -1,6 +1,6 @@
 {
   "name": "dcdr",
-  "version": "1.0.5",
+  "version": "2.0.0",
   "description": "VSCO's DCDR (Decider) package for Node.js",
   "license": "MIT",
   "repository": {
