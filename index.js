@@ -29,7 +29,8 @@ Dcdr.prototype.watchConfig = function() {
   }
 
   chokidar.watch(this.config.dcdr.path)
-    .on('change', watchHandler.bind(this));
+    .on('change', watchHandler.bind(this))
+    .on('add', watchHandler.bind(this));
 };
 
 Dcdr.prototype.loadFeatures = function(path, isInitialLoad) {
