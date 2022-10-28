@@ -30,8 +30,10 @@ Dcdr.prototype.watchConfig = function() {
 
   chokidar.watch(this.config.dcdr.path)
     .on('change', watchHandler.bind(this))
-    .on('add', watchHandler.bind(this))
-    .on('error', (error) => this.config.logger.error(`${this.config.dcdr.path} watcher error: ${error}`));
+    // for temp debug logging
+    .on('raw', function(event, path, details) {
+      this.config.logger.info('Raw event info: ' + event + ', ' + path + ', ' + JSON.stringify(details));
+    }.bind(this));
 };
 
 Dcdr.prototype.loadFeatures = function(path, isInitialLoad) {
