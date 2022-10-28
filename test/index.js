@@ -175,7 +175,8 @@ describe('Dcdr', function() {
     dcdr.features = {};
     dcdr.init(cfg);
 
-    expect(dcdr.isAvailable('boolean_feature')).to.be.false;
+    expect(dcdr.features).to.be.empty;
+    expect(fs.existsSync(cfg.dcdr.path)).to.be.false;
     done();
   });
 });
