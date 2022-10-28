@@ -7,9 +7,11 @@ var expect = chai.expect;
 
 var dcdr = require('../index');
 
-dcdr.config = {
+var tempDir = process.env.TEMP || process.env.TMP || '/tmp';
+var tempPath = tempDir + '/dcdr-test.json';
+var config = {
   dcdr: {
-    path: '/etc/dcdr/decider.json'
+    path: tempPath
   }
 };
 
@@ -27,8 +29,16 @@ var mockFeatures = {
 };
 
 describe('Dcdr', function() {
-  var tempDir = process.env.TEMP || process.env.TMP || '/tmp';
-  var tempPath = tempDir + '/dcdr-test.json';
+  // initialize once and begin watcher (except for last test, which tests failed initialization)
+  before(function() {
+    fs.writeFileSync(tempPath, '{}');
+    dcdr.init(config);
+  });
+
+  // reset features to avoid test order influencing tests
+  beforeEach(function() {
+    dcdr.features = {};
+  });
 
   // deletes test decider.json file after tests are complete
   after(function() {
@@ -94,23 +104,9 @@ describe('Dcdr', function() {
     done();
   });
 
-  it('fail closed when decider.json is not found', function(done) {
-    var cfg = {
-      dcdr: {
-        path: './not_found'
-      }
-    };
-
-    dcdr.features = {};
-    dcdr.init(cfg);
-
-    expect(dcdr.isAvailable('boolean_feature')).to.be.false;
-    done();
-  });
-
   it('handles features file updated to zero length', function(done) {
     fs.writeFileSync(tempPath, '{"dcdr":{"features":{"default":{"test": 1}}}}');
-    dcdr.init({ dcdr: { path: tempPath } });
+    dcdr.loadFeatures(tempPath, false);
     setTimeout(function() {
       fs.writeFileSync(tempPath, '');
       setTimeout(done, 100);
@@ -129,7 +125,7 @@ describe('Dcdr', function() {
     };
 
     fs.writeFileSync(tempPath, JSON.stringify(features));
-    dcdr.init({ dcdr: { path: tempPath } });
+    dcdr.loadFeatures(tempPath, false);
 
     expect(dcdr.isAvailable('boolean_feature')).to.be.true;
 
@@ -140,5 +136,46 @@ describe('Dcdr', function() {
       expect(dcdr.isAvailable('boolean_feature')).to.be.false;
       done();
     }, 300);
+  });
+
+  it('should detect decider.json being deleted and re-added', function(done) {
+    var features = {
+      dcdr: {
+        features: {
+          default: {
+            boolean_feature: true
+          }
+        }
+      }
+    };
+
+    fs.writeFileSync(tempPath, JSON.stringify(features));
+    dcdr.loadFeatures(tempPath, false);
+
+    expect(dcdr.isAvailable('boolean_feature')).to.be.true;
+
+    setTimeout(function() {
+      fs.unlinkSync(tempPath);
+      features.dcdr.features.default.boolean_feature = false;
+      fs.writeFileSync(tempPath, JSON.stringify(features));
+      setTimeout(function() {
+        expect(dcdr.isAvailable('boolean_feature')).to.be.false;
+        done();
+      }, 300);
+    }, 300);
+  });
+
+  it('fail closed when decider.json is not found', function(done) {
+    var cfg = {
+      dcdr: {
+        path: './not_found'
+      }
+    };
+
+    dcdr.features = {};
+    dcdr.init(cfg);
+
+    expect(dcdr.isAvailable('boolean_feature')).to.be.false;
+    done();
   });
 });
